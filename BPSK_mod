@@ -1,0 +1,29 @@
+# This program represents a simple digital communication system with the utilization of BPSK modulation
+
+import numpy as np
+
+# Parameters
+num_bits = 10000
+data = np.random.randint(0, 2, num_bits)
+print("Generated Binary Data:", data[:10])
+# BPSK Modulation
+bpsk_modulated_data = 2*data - 1  # Map 0 -> -1 and 1 -> 1
+print("BPSK Modulated Data:", bpsk_modulated_data[:10])
+
+import scipy.stats as stats
+
+# AWGN Channel
+EbNo_dB = 10
+EbNo = 10**(EbNo_dB / 10)
+noise_std = np.sqrt(1 / (2 * EbNo))
+noise = noise_std * np.random.randn(num_bits)
+bpsk_noisy_data = bpsk_modulated_data + noise
+print("Noisy Signal Data:", bpsk_noisy_data[:10])
+
+# BPSK Demodulation
+bpsk_demodulated_data = np.where(bpsk_noisy_data >= 0, 1, 0)
+print("Demodulated Data:", bpsk_demodulated_data[:10])
+
+# Bit Error Rate (BER) Calculation
+ber = np.sum(data != bpsk_demodulated_data) / num_bits
+print("Bit Error Rate (BER):", ber)
